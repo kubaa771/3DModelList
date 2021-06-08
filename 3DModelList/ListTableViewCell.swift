@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  ListTableViewCell.swift
 //  3DModelList
 //
 //  Created by Jakub Iwaszek on 01/06/2021.
@@ -8,28 +8,44 @@
 import UIKit
 import SceneKit
 
-class ViewController: UIViewController {
+class ListTableViewCell: UITableViewCell {
+
+    @IBOutlet weak var renderImageView: UIImageView!
+    @IBOutlet weak var fileNameLabel: UILabel!
     
-    @IBOutlet weak var sceneView: SCNView!
+    var scene: SCNScene!
     
-    var element: TDModel!
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        getSceneFile()
-        loadLabel()
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        // Initialization code
     }
-    
-    func getSceneFile() {
-        do {
-            let scene = try SCNScene(url: element.url, options: nil)
-            self.configureScene(scene: scene)
-        } catch {
-            print(error.localizedDescription)
+
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+
+        // Configure the view for the selected state
+    }
+
+    var model: TDModel! {
+        didSet {
+            customize(model: model)
         }
     }
     
-    func configureScene(scene: SCNScene) {
+    func customize(model: TDModel) {
+        fileNameLabel.text = model.fileName
+        do {
+            let scene = try SCNScene(url: model.url, options: nil)
+            renderImageView.image = getSnapshotFromScene(scene: scene)
+            model.scene = scene
+        } catch {
+            print(error.localizedDescription)
+        }
+        
+    }
+    
+    func getSnapshotFromScene(scene: SCNScene) -> UIImage {
+        let sceneView = SCNView(frame: renderImageView.frame)
         let camera = SCNCamera()
         camera.usesOrthographicProjection = true
         camera.orthographicScale = 9
@@ -52,7 +68,7 @@ class ViewController: UIViewController {
         let lightNode = SCNNode()
         lightNode.light = SCNLight()
         lightNode.light?.type = .omni
-        lightNode.position = SCNVector3(0, 10, 35)
+        lightNode.position = SCNVector3(0, 10, 25)
         scene.rootNode.addChildNode(lightNode)
         
         let ambientLightNode = SCNNode()
@@ -61,25 +77,14 @@ class ViewController: UIViewController {
         ambientLightNode.light?.color = UIColor.darkGray
         scene.rootNode.addChildNode(ambientLightNode)
         
-        
         sceneView.allowsCameraControl = true
         sceneView.backgroundColor = .white
         sceneView.cameraControlConfiguration.allowsTranslation = false
-    
+
         sceneView.scene = scene
+        
+        self.scene = scene
+        
+        return sceneView.snapshot()
     }
-    
-    func loadLabel() {
-        let textLabel = UILabel(frame: CGRect(x: 0, y: sceneView.frame.height / 1.5, width: sceneView.frame.size.width, height: 50))
-        textLabel.text = element.fileName
-        textLabel.textColor = .black
-        textLabel.textAlignment = .center
-        self.view.addSubview(textLabel)
-    }
-    
-    func degToRad(deg: Float) -> Float{
-        return (deg / 180 * .pi)
-    }
-
 }
-
