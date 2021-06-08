@@ -139,8 +139,8 @@
 			isa = PBXGroup;
 			children = (
 				8A7486F1266666AC00556F41 /* AppDelegate.swift */,
-				8A7487402666724300556F41 /* FirebaseStorage.swift */,
 				8A7486F3266666AC00556F41 /* SceneDelegate.swift */,
+				8A7487402666724300556F41 /* FirebaseStorage.swift */,
 				8A7486F5266666AC00556F41 /* ViewController.swift */,
 				8A748754266699DC00556F41 /* ListViewController.swift */,
 				8A74875C2666A6C000556F41 /* ListTableViewCell.swift */,

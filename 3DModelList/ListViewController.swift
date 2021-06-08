@@ -15,9 +15,7 @@ class ListViewController: UIViewController {
     var blurViewEffect: UIVisualEffectView = {
         let blurEffect = UIBlurEffect(style: .dark)
         let blurEffectView = UIVisualEffectView(effect: blurEffect)
-        
         blurEffectView.alpha = 0.8
-        
         blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
         return blurEffectView
